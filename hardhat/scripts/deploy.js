@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const { WHITELIST_CONTRACT_ADDRESS, METADATA_URL } = require("../constants");
+const { WHITELIST_CONTRACT_ADDRESS, METADATA_URL } = require("../constants/index");
 
 async function main() {
 
@@ -8,13 +8,13 @@ async function main() {
   // URL from where we can extract the metadata for a Crypto Dev NFT
   const metadataURL = METADATA_URL;
 
-  const contract = await ethers.getContarctFactory("BinnaDevs");
+  const binnaDevsContract = await ethers.getContractFactory("BinnaDevs");
 
-  const deployedContract = await contract.deploy(metadataURL, whitelistContract);
+  const deployedBinnaDevsContract = await binnaDevsContract.deploy(metadataURL, whitelistContract);
 
-  await deployedContract.deployed();
+  await deployedBinnaDevsContract.deployed();
 
-  console.log(`BinnaDevs Contract Address => ${deployedContract}`);
+  console.log(`BinnaDevs Contract Address => ${deployedBinnaDevsContract.address}`);
   
 }
 
