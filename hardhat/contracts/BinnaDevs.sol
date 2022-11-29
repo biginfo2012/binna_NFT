@@ -12,11 +12,11 @@ contract BinnaDevs is ERC721Enumerable, Ownable {
       */
     string _baseTokenURI;
 
-    //  _price is the price of one Crypto Dev NFT
+    //  _price is the price of one Binna Dev NFT
     uint256 public _price = 0.01 ether;
     // timestamp for when presale would end
     uint256 public presaleEnded;
-    // max number of CryptoDevs
+    // max number of BinnaDevs
     uint256 public maxTokenIds = 20;
     // total number of tokenIds minted
     uint256 public tokenIds;
@@ -35,14 +35,14 @@ contract BinnaDevs is ERC721Enumerable, Ownable {
     }
     modifier priceAndExceededSupply{
         require(msg.value >= _price, "Ether sent is not correct");
-        require(tokenIds < maxTokenIds, "Exceeded maximum Crypto Devs supply");
+        require(tokenIds < maxTokenIds, "Exceeded maximum Binna Devs supply");
         _;
     }
 
     /**
       * @dev ERC721 constructor takes in a `name` and a `symbol` to the token collection.
-      * name in our case is `Crypto Devs` and symbol is `CD`.
-      * Constructor for Crypto Devs takes in the baseURI to set _baseTokenURI for the collection.
+      * name in our case is `Binna Devs` and symbol is `CD`.
+      * Constructor for Binna Devs takes in the baseURI to set _baseTokenURI for the collection.
       * It also initializes an instance of whitelist interface.
       */
     constructor (string memory baseURI, address whitelistContract) ERC721("Binna Devs", "BD_NFTs") {
