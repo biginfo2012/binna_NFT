@@ -19,7 +19,7 @@ const Main = ({renderButton, tokenIdsMinted}) => {
             </div>
             
             <div>
-                <Image className={styles.image} src="./0.svg" alt='NFT'/>
+                <Image className={styles.image} src="/binnadevs/1.svg" alt='NFT' width='200' height='200'/>
             </div>
         </div>
     )
