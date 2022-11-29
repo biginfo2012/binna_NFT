@@ -27,14 +27,13 @@ export default function Home() {
   const web3ModalRef = useRef();
 
   /**
-   * Returns a Provider or Signer object representing the Ethereum RPC with or without the
-   * signing capabilities of metamask attached
+   * Returns a Provider (if you pass an argument of true, it will return a signer)
    * @param {*} needSigner - True if you need the signer, default false otherwise
    */
   const getProviderOrSigner = async (needSigner = false) => {
     // Connect to Metamask
-    // Since we store `web3Modal` as a reference, we need to access the `current` value to get access to the underlying object
     const provider = await web3ModalRef.current.connect();
+    // use provider as a node to connect to the blockchain
     const web3Provider = new providers.Web3Provider(provider);
 
     // If user is not connected to the Goerli network, let them know and throw an error
@@ -46,59 +45,43 @@ export default function Home() {
 
     if (needSigner) {
       const signer = web3Provider.getSigner();
+      // this will return the private key to sign the transaction.
       return signer;
     }
     return web3Provider;
   };
 
-  //  presaleMint: Mint an NFT during the presale
-  const presaleMint = async () => {
-    try {
-      // We need a Signer here since this is a 'write' transaction.
-      const signer = await getProviderOrSigner(true);
-      // Create a new instance of the Contract with a Signer, which allows
-      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
-      const tx = await nftContract.presaleMint({ value: utils.parseEther("0.01") });
-      
-      setLoading(true);
-      // wait for the transaction to get mined
-      await tx.wait();
-      setLoading(false);
-
-      window.alert("You successfully minted a Crypto Dev!");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  //  publicMint: Mint an NFT after the presale
-  const publicMint = async () => {
-    try {
-      // We need a Signer here since this is a 'write' transaction.
-      const signer = await getProviderOrSigner(true);
-      // Create a new instance of the Contract with a Signer, which allows
-      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
-      const tx = await nftContract.mint({ value: utils.parseEther("0.01") });
-      
-      setLoading(true);
-      // wait for the transaction to get mined
-      await tx.wait();
-      setLoading(false);
-      window.alert("You successfully minted a Crypto Dev!");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   //  connectWallet: Connects the MetaMask wallet
   const connectWallet = async () => {
     try {
-      // Get the provider from web3Modal, which in our case is MetaMask
-      // When used for the first time, it prompts the user to connect their wallet
+      // connect to a node
       await getProviderOrSigner();
+      // updated the state 'walletConnect'
       setWalletConnected(true);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  // getOwner: calls the contract to retrieve the owner
+  const getOwner = async () => {
+    try {
+      const provider = await getProviderOrSigner();
+      // We connect to the Contract using a Provider, so we will only
+      // have read-only access to the Contract
+      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
+
+      // call the owner function from the contract
+      const _owner = await nftContract.owner();
+      // We will get the signer now to extract the address of the currently connected MetaMask account
+      const signer = await getProviderOrSigner(true);
+      const address = await signer.getAddress();
+
+      if (address.toLowerCase() === _owner.toLowerCase()) {
+        setIsOwner(true);
+      }
+    } catch (err) {
+      console.error(err.message);
     }
   };
 
@@ -107,7 +90,6 @@ export default function Home() {
     try {
       // We need a Signer here since this is a 'write' transaction.
       const signer = await getProviderOrSigner(true);
-      // Create a new instance of the Contract with a Signer, which allows
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
       // call the startPresale from the contract
       const tx = await nftContract.startPresale();
@@ -128,14 +110,12 @@ export default function Home() {
    */
   const checkIfPresaleStarted = async () => {
     try {
-      // Get the provider from web3Modal, which in our case is MetaMask
       // No need for the Signer here, as we are only reading state from the blockchain
       const provider = await getProviderOrSigner();
-      // We connect to the Contract using a Provider, so we will only
-      // have read-only access to the Contract
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
       // call the presaleStarted from the contract
       const _presaleStarted = await nftContract.presaleStarted();
+
       if (!_presaleStarted) {
         await getOwner();
       }
@@ -153,12 +133,10 @@ export default function Home() {
    */
   const checkIfPresaleEnded = async () => {
     try {
-      // Get the provider from web3Modal, which in our case is MetaMask
       // No need for the Signer here, as we are only reading state from the blockchain
       const provider = await getProviderOrSigner();
-      // We connect to the Contract using a Provider, so we will only
-      // have read-only access to the Contract
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
+
       // call the presaleEnded from the contract
       const _presaleEnded = await nftContract.presaleEnded();
       // _presaleEnded is a Big Number, so we are using the lt(less than function) instead of `<`
@@ -178,39 +156,50 @@ export default function Home() {
     }
   };
 
-  // getOwner: calls the contract to retrieve the owner
-  const getOwner = async () => {
+  //  presaleMint: Mint an NFT during the presale
+  const presaleMint = async () => {
     try {
-      // Get the provider from web3Modal, which in our case is MetaMask
-      // No need for the Signer here, as we are only reading state from the blockchain
-      const provider = await getProviderOrSigner();
-      // We connect to the Contract using a Provider, so we will only
-      // have read-only access to the Contract
-      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
-      // call the owner function from the contract
-      const _owner = await nftContract.owner();
-      // We will get the signer now to extract the address of the currently connected MetaMask account
+       // We need a Signer here since this is a 'write' transaction.
       const signer = await getProviderOrSigner(true);
-      // Get the address associated to the signer which is connected to  MetaMask
-      const address = await signer.getAddress();
-      if (address.toLowerCase() === _owner.toLowerCase()) {
-        setIsOwner(true);
-      }
+      // Create a new instance of the Contract with a Signer
+      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
+      const tx = await nftContract.presaleMint({ value: utils.parseEther("0.01") });
+      
+      setLoading(true);
+      // wait for the transaction to get mined
+      await tx.wait();
+      setLoading(false);
+
+      window.alert("You successfully minted a Binna Dev!");
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
     }
   };
 
-  /**
-   * getTokenIdsMinted: gets the number of tokenIds that have been minted
-   */
+  //  publicMint: Mint an NFT after the presale
+  const publicMint = async () => {
+    try {
+      const signer = await getProviderOrSigner(true);
+      // Create a new instance of the Contract with a Signer, which allows
+      const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, signer);
+     
+      const tx = await nftContract.mint({ value: utils.parseEther("0.01") });
+      
+      setLoading(true);
+      // wait for the transaction to get mined
+      await tx.wait();
+      setLoading(false);
+      window.alert("You successfully minted a Binna Dev!");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  // getTokenIdsMinted: gets the number of tokenIds that have been minted
   const getTokenIdsMinted = async () => {
     try {
-      // Get the provider from web3Modal, which in our case is MetaMask
       // No need for the Signer here, as we are only reading state from the blockchain
       const provider = await getProviderOrSigner();
-      // We connect to the Contract using a Provider, so we will only
-      // have read-only access to the Contract
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, abi, provider);
       // call the tokenIds from the contract
       const _tokenIds = await nftContract.tokenIds();
@@ -258,7 +247,7 @@ export default function Home() {
 
   //  renderButton: Returns a button based on the state of the dapp
   const renderButton = () => {
-    // If wallet is not connected, return a button which allows them to connect their wllet
+    // If wallet is not connected, return a button which allows the user to connect their wallet
     if (!walletConnected) {
       return (
         <button onClick={connectWallet} className={styles.button}>
@@ -285,7 +274,7 @@ export default function Home() {
     if (!presaleStarted) {
       return (
         <div>
-          <div className={styles.description}>Presale hasnt started!</div>
+          <div className={styles.description}>Presale hasn't started!</div>
         </div>
       );
     }
@@ -295,7 +284,7 @@ export default function Home() {
       return (
         <div>
           <div className={styles.description}>
-            Presale has started!!! If your address is whitelisted, Mint a Crypto
+            Presale has started!!! If your address is whitelisted, Mint a Binna
             Dev 🥳
           </div>
           <button className={styles.button} onClick={presaleMint}>
