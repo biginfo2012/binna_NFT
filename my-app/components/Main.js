@@ -1,4 +1,5 @@
 import styles from '../styles/Home.module.css'
+import Image from 'next/image'
 
 const Main = ({renderButton, tokenIdsMinted}) => {
     return (
@@ -18,7 +19,7 @@ const Main = ({renderButton, tokenIdsMinted}) => {
             </div>
             
             <div>
-                <img className={styles.image} src="./0.svg" />
+                <Image className={styles.image} src="./0.svg" alt='NFT'/>
             </div>
         </div>
     )
