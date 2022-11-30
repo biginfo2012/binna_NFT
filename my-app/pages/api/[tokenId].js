@@ -10,7 +10,7 @@ export default function handler(req, res) {
   // More info can be found here: https://docs.opensea.io/docs/metadata-standards
   res.status(200).json({
     name: "Binna Dev #" + tokenId,
-    description: "Binna Dev is a collection of developers in crypto",
+    description: "Binna Dev is a collection of NFTs in crypto",
     image: image_url + tokenId + ".svg",
   });
 }
