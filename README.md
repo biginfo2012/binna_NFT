@@ -11,6 +11,9 @@ Build an NFT Collection
 - There is a website for interacting with the contract.
 
 Contract Address: 0xF39897B8C16ca2FB10D3b80e87b674eE341deB83
+
 [View the contract](https://goerli.etherscan.io/address/0xF39897B8C16ca2FB10D3b80e87b674eE341deB83)
+
 [Website](https://nft-collection-tau-three.vercel.app/)
+
 [Source code](https://github.com/obinnafranklinduru/NFT-Collection)
