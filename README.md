@@ -1,19 +1,40 @@
-# NFT-Collection
-Build an NFT Collection
+# BinnaDevs Decentralised Application
 
-NFTs are examples of Non-Fungible Tokens where each token is different from a different token.
+The BinnaDevs project consists of a smart contract written in Solidity and a frontend application built with Next.js. The smart contract allows users to mint Binna Dev NFTs, while the frontend provides a user interface for interacting with the smart contract.
 
-Build an NFT Collection
+## Smart Contract - BinnaDevs
 
-- There are 20 Binna Dev NFTs, and each one of them is unique.
-- Users are only allowed to create one NFT per transaction.
-- Whitelisted users have a 5-minute presale period before the actual sale, where they are guaranteed 1 NFT per transaction.
-- There is a website for interacting with the contract.
+The BinnaDevs smart contract is an ERC721 token contract that allows users to mint Binna Dev NFTs during a presale period or after the presale has ended. The contract includes functionality for presale minting, regular minting, pausing the contract, and withdrawing Ether from the contract.
 
-Contract Address: 0xF39897B8C16ca2FB10D3b80e87b674eE341deB83
+## Frontend - Next.js Application
 
-[View the contract](https://goerli.etherscan.io/address/0xF39897B8C16ca2FB10D3b80e87b674eE341deB83)
+The frontend application built with Next.js provides a user interface for interacting with the BinnaDevs smart contract. It allows users to connect their web3-enabled wallets (e.g., MetaMask) and perform the following actions:
 
-[Website](https://nft-collection-tau-three.vercel.app/)
+- View and participate in the presale period.
+- Mint Binna Dev NFTs after the presale has ended.
+- Pause or unpause the contract (accessible only to the contract owner).
+- View the current status of the contract and NFTs.
 
-[Source code](https://github.com/obinnafranklinduru/NFT-Collection)
+## Technologies Used
+
+The BinnaDevs project utilizes the following technologies:
+
+- Solidity: The programming language used for writing the smart contract.
+- Next.js: A React framework for building the frontend application.
+- Web3.js: A JavaScript library for interacting with Ethereum and smart contracts.
+- MetaMask: A browser extension for managing Ethereum accounts and interacting with Ethereum applications.
+
+## How to Use
+
+1. Deploy the BinnaDevs smart contract and provide the necessary configuration parameters (e.g., baseURI, whitelist contract address).
+2. Build and run the frontend application locally or deploy it to a web server.
+3. Connect a compatible web3-enabled wallet (e.g., MetaMask) to the frontend application.
+4. Use the user interface to interact with the BinnaDevs smart contract, including participating in the presale, minting NFTs, and managing the contract state.
+
+## Contributions
+
+Contributions to this project are welcome! If you find any issues or have suggestions for improvement, please feel free to create a pull request or submit an issue on the project's repository.
+
+## License
+
+The code in this repository is licensed under the MIT License.
